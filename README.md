@@ -43,12 +43,6 @@
   * [Step 1: disable access to the machine](#step-1-disable-access-to-the-machine)
   * [Step 2: trigger a manual backup](#step-2-trigger-a-manual-backup)
   * [Step 3: re-enable access to the machine](#step-3-re-enable-access-to-the-machine)
-* [Maintenance: restore your data manually](#maintenance-restore-your-data-manually)
-  * [Step 1: ensure Mailinabox is running](#step-1-ensure-mailinabox-is-running)
-  * [Step 2: disable access to the machine before restoring the data](#step-2-disable-access-to-the-machine-before-restoring-the-data)
-  * [Step 3: restore last backup](#step-3-restore-last-backup)
-  * [Step 4: re-enable access to the machine](#step-4-re-enable-access-to-the-machine)
-  * [Step 5: reconfigure Mailinabox](#step-5-reconfigure-mailinabox)
 
 ## 1. Requirements
 
@@ -595,123 +589,11 @@ sudo ufw enable
 
 You can trigger a manual backup with this:
 
-<!-- markdownlint-disable MD013 -->
 ```bash
-# Login as root
-sudo su root
-
-# Ask for backup machine username
-read -r -p 'Enter your backup machine username: ' backupusername
-
-# Ask for backup machine IP or hostname
-read -r -p 'Enter your backup machine IP address or hostname: ' backuphost
-
-# Run backup
-/root/rsync-time-backup/rsync_tmbackup.sh /mnt/md0/user-data ${backupusername}@${backuphost}:/home/${backupusername}/backup-data
-
-# Exit root
-exit
+sudo ~/mailinabox/management/backup.py
 ```
-<!-- markdownlint-enable MD013 -->
 
 ### Step 3: re-enable access to the machine
-
-[Back to top ↑](#maintenance-guide)
-
-```bash
-# Reset all firewall rules
-sudo ufw reset
-
-# Allow all services
-sudo ufw allow 22/tcp
-sudo ufw allow 53
-sudo ufw allow 25/tcp
-sudo ufw allow 587/tcp
-sudo ufw allow 993/tcp
-sudo ufw allow 995/tcp
-sudo ufw allow 4190/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# Reactive the firewall
-sudo ufw enable
-```
-
-## Maintenance: restore your data manually
-
-### Step 1: ensure Mailinabox is running
-
-If you are restoring your data on a new machine,
-ensure that you've performed all [installation steps](#installation-guide).
-
-### Step 2: disable access to the machine before restoring the data
-
-[Back to top ↑](#maintenance-guide)
-
-To ensure there will be no conflict, block
-access to your machine to all services besides SSH.
-
-```bash
-# Reset all firewall rules
-sudo ufw reset
-
-# Only allow SSH (if not, we loose access to the machine)
-sudo ufw allow 22
-
-# Reactive the firewall
-sudo ufw enable
-```
-
-### Step 3: restore last backup
-
-[Back to top ↑](#maintenance-guide)
-
-<!-- markdownlint-disable MD013 -->
-```bash
-# Login as root
-sudo su root
-
-# Ask for backup machine username
-read -r -p 'Enter your backup machine username: ' backupusername
-
-# Ask for backup machine IP or hostname
-read -r -p 'Enter your backup machine IP address or hostname: ' backuphost
-
-# Get last backup path
-last_backup_path=$(ssh "${backupusername}@${backuphost}" "ls -td /home/${backupusername}/backup-data/*/ | head -1")
-
-# Replace existing data with the ones from the last backup
-rsync -aP --delete "${backupusername}@${backuphost}:${last_backup_path}" /mnt/md0/user-data
-
-# Logout from root
-exit
-```
-<!-- markdownlint-enable MD013 -->
-
-### Step 4: re-enable access to the machine
-
-[Back to top ↑](#maintenance-guide)
-
-```bash
-# Reset all firewall rules
-sudo ufw reset
-
-# Allow all services
-sudo ufw allow 22/tcp
-sudo ufw allow 53
-sudo ufw allow 25/tcp
-sudo ufw allow 587/tcp
-sudo ufw allow 993/tcp
-sudo ufw allow 995/tcp
-sudo ufw allow 4190/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-
-# Reactive the firewall
-sudo ufw enable
-```
-
-### Step 5 reconfigure Mailinabox
 
 [Back to top ↑](#maintenance-guide)
 
