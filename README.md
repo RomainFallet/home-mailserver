@@ -36,6 +36,10 @@
     * [Step 1: access your external DNS configuration](#step-1-access-your-external-dns-configuration)
     * [Step 2: replicate this configuration in your DNS zone](#step-2-replicate-this-configuration-in-your-dns-zone)
 11. [Request TLS certificates from Let's Encrypt](#11-request-tls-certificates-from-lets-encrypt)
+12. [Configure backups](#12-configure-backups)
+    * [Step 1: find a place for your backup machine](#step-1-find-a-place-for-your-backup-machine)
+    * [Step 2: set up the backup machine](#step-2-set-up-the-backup-machine)
+    * [Step 3: enable rsync backups](#step-3-enable-rsync-backups)
 
 ## Maintenance guide
 
@@ -563,6 +567,43 @@ Now, if you go to "Status Checks", you should have green lines everywhere:
 checks that the reverse DNS is set for both IPV4 and IPV6 but my ISP
 only allow me to set up reverse DNS for IPV4 yet. It's not yet and
 issue because IPV6 is almost unused for now.*
+
+## 12. Configure backups
+
+### Step 1: find a place for your backup machine
+
+[Back to top ↑](#installation-guide)
+
+Your need redundancy for your datas, because they are
+not protected from a burglary, a fire, a water
+leak or an overvoltage.
+
+Whatever the case, you always need
+a place, different from the place where you installed your
+machine to set up a backup machine (a different office, a family or friend house...).
+
+This is the only way to provide a bullet proof redundancy system for your data.
+
+### Step 2: set up the backup machine
+
+[Back to top ↑](#installation-guide)
+
+You can set up a backup machine with a second Raspberry Pie.
+Find instructions here: [https://github.com/RomainFallet/home-backupserver](https://github.com/RomainFallet/home-backupserver).
+
+### Step 3: enable rsync backups
+
+[Back to top ↑](#installation-guide)
+
+In the admin panel, go to "System" > "Backup status" and select "rsync" in the dropdown:
+
+![backup-status](https://user-images.githubusercontent.com/6952638/84088847-d0952500-a9ed-11ea-8e55-87265d377b23.png)
+
+Here, enter the backup machine hostname and the [username you've created](https://github.com/RomainFallet/home-backupserver#11-create-a-new-backup-access)
+on the backup machine.
+
+As explained, you need to copy the displayed SSH public
+key to the `~/.ssh/authorized_keys` file of the user on the backup machine.
 
 ## Maintenance: backup your data manually
 
