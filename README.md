@@ -31,7 +31,6 @@
 9. [Set up Mailinabox](#9-set-up-mailinabox)
     * [Step 1: install Mailinabox](#step-1-install-mailinabox)
     * [Step 2: login to your admin panel](#step-2-login-to-your-admin-panel)
-    * [Step 3: disable backups](#step-3-disable-backups)
 10. [Configure your DNS zone](#10-configure-your-dns-zone)
     * [Step 1: access your external DNS configuration](#step-1-access-your-external-dns-configuration)
     * [Step 2: replicate this configuration in your DNS zone](#step-2-replicate-this-configuration-in-your-dns-zone)
@@ -480,18 +479,6 @@ https://<yourIP>/admin
 ```
 
 Accept the security warning and login with your credentials.
-
-### Step 3: disable backups
-
-[Back to top ↑](#installation-guide)
-
-Then go to "System" > "Backup status" and disable backups:
-
-![disablebackup](https://user-images.githubusercontent.com/6952638/79106306-889dad00-7d72-11ea-9eed-e0b557eeece6.png)
-
-We need to disable Mailinabox backups because they are stored on
-the machine itself and can rapidly take a lot of space as your data grows.
-We will configure an external backup system later.
 
 ## 10. Configure your DNS zone
 
