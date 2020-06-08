@@ -1,4 +1,4 @@
-# (Re)Take control of your mails with Mailinabox on a Raspberry Pie 4
+# (Re)Take control of your emails at home with Mailinabox and a Raspberry Pie 4
 
 ## Installation guide
 
