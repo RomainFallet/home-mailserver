@@ -115,7 +115,7 @@ in order to flash the downloaded image onto the microSD card.
 2. Put your Raspberry Pie into its case.
 3. Connect your Raspberry Pie to your router with the ehernet cable.
 4. Connect your keyboard and screen to your Raspberry Pie.
-7. Connect the power adaptators of your Rasberry Pie and screen.
+5. Connect the power adaptators of your Rasberry Pie and screen.
 
 Your Ubuntu machine will boot up!
 
@@ -405,9 +405,11 @@ ssh-keygen -t rsa -b 4096 -N ''
 
 From your computer, run:
 
+<!-- markdownlint-disable MD013 -->
 ```bash
 ssh <yourUserName>@<yourIpAddress> "echo '$(cat ~/.ssh/id_rsa.pub)' | tee -a ~/.ssh/authorized_keys > /dev/null"
 ```
+<!-- markdownlint-enable -->
 
 If you try to reconnect to your machine through SSH, you should now be
 able to login without being asked for a password. SSH will automatically
@@ -432,6 +434,7 @@ files in your next computer to allow connections from it).
 
 To disable SSH password authentication, connect to your Pie and run:
 
+<!-- markdownlint-disable MD013 -->
 ```bash
 # Update the config and save the original in a "/etc/ssh/sshd_config.backup" file
 sudo sed -i'.backup' -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
@@ -439,6 +442,7 @@ sudo sed -i'.backup' -e 's/PasswordAuthentication yes/PasswordAuthentication no/
 # Restart SSH
 sudo service ssh restart
 ```
+<!-- markdownlint-enable -->
 
 ## 9. Set up Mailinabox
 
@@ -559,7 +563,6 @@ Now, if you go to "Status Checks", you should have green lines everywhere:
 checks that the reverse DNS is set for both IPV4 and IPV6 but my ISP
 only allow me to set up reverse DNS for IPV4 yet. It's not yet and
 issue because IPV6 is almost unused for now.*
-
 
 ## Maintenance: backup your data manually
 

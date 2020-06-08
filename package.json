@@ -1,0 +1,26 @@
+{
+  "name": "home-backupserver",
+  "version": "1.0.0",
+  "repository": "git@github.com:RomainFallet/home-backupserver.git",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "~4.2.5",
+    "lint-staged": "~10.2.9",
+    "markdownlint": "~0.20.0",
+    "markdownlint-cli": "~0.23.1"
+  },
+  "scripts": {
+    "lint": "markdownlint \"./*.md\" --ignore ./node_modules",
+    "format": "markdownlint --fix \"./*.md\" --ignore ./node_modules"
+  },
+  "lint-staged": {
+    "./*.md": [
+      "markdownlint --ignore ./node_modules"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
