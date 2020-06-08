@@ -157,7 +157,7 @@ sudo reboot
 [Back to top ↑](#installation-guide)
 
 Because you might want something more personal than "ubuntu" as a
-username, you can change them. We will need the
+username, you can change it. We will need the
 root account for that so we will temporary allow root login:
 
 ```bash
