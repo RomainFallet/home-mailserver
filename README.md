@@ -34,7 +34,7 @@
     * [Step 3: disable backups](#step-3-disable-backups)
 10. [Configure your DNS zone](#10-configure-your-dns-zone)
     * [Step 1: access your external DNS configuration](#step-1-access-your-external-dns-configuration)
-    * [Step 2: replicate this configuration in your DNS zone](#step-3-replicate-this-configuration-in-your-dns-zone)
+    * [Step 2: replicate this configuration in your DNS zone](#step-2-replicate-this-configuration-in-your-dns-zone)
 11. [Request TLS certificates from Let's Encrypt](#11-request-tls-certificates-from-lets-encrypt)
 
 ## Maintenance guide
@@ -396,10 +396,8 @@ If you don't have an SSH key (look for "`~/.ssh/id_rsa`" and
 "`~/.ssh/id_rsa.pub`" files), use this command to generate one:
 
 ```bash
-ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+ssh-keygen -t rsa -b 4096 -N ''
 ```
-
-At the prompts, you can press "Enter" to use default settings.
 
 ### Step 2: add your public key to your machine's authorized keys
 
@@ -420,7 +418,7 @@ log you if your local SSH key matches one indicated in the remote
 
 [Back to top ↑](#installation-guide)
 
-Now that you have an passwordless SSH access to your Raspberry Pie,
+Now that you have a passwordless SSH access to your Raspberry Pie,
 we will disallow password authentication. This will prevent all non
 authorized computers from being able to access it through SSH.
 
