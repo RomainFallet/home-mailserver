@@ -584,7 +584,7 @@ Find instructions here: [https://github.com/RomainFallet/home-backupserver](http
 
 In the admin panel, go to "System" > "Backup status" and select "rsync" in the dropdown:
 
-![Capture du 2020-06-15 17-07-00](https://user-images.githubusercontent.com/6952638/84674123-db3e4580-af2a-11ea-9376-c4fb8118d7c9.png)
+![Capture du 2020-06-15 17-35-02](https://user-images.githubusercontent.com/6952638/84677120-91eff500-af2e-11ea-9a0f-a5c9ed03a97d.png)
 
 Here, enter the backup machine hostname and the [username you've created](https://github.com/RomainFallet/home-backupserver#11-create-a-new-backup-access)
 on the backup machine.
