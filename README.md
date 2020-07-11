@@ -431,7 +431,7 @@ Now that you have a passwordless SSH access to your Raspberry Pie,
 we will disallow password authentication. This will prevent all non
 authorized computers from being able to access it through SSH.
 
-I recommend you to backup your "~/.ssh/id_rsa" and "~/.ssh/id_rsa.pub"
+I recommend you to backup your "`~/.ssh/id_rsa`" and "`~/.ssh/id_rsa.pub`"
 files in a safe place, for example in a password manager app protected
 by a master password.
 
