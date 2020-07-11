@@ -31,6 +31,7 @@
 9. [Set up Mailinabox](#9-set-up-mailinabox)
     * [Step 1: install Mailinabox](#step-1-install-mailinabox)
     * [Step 2: login to your admin panel](#step-2-login-to-your-admin-panel)
+    * [Step 3: disable default backups](#step-3-disable-default-backups)
 10. [Configure your DNS zone](#10-configure-your-dns-zone)
     * [Step 1: access your external DNS configuration](#step-1-access-your-external-dns-configuration)
     * [Step 2: replicate this configuration in your DNS zone](#step-2-replicate-this-configuration-in-your-dns-zone)
@@ -38,7 +39,8 @@
 12. [Configure backups](#12-configure-backups)
     * [Step 1: find a place for your backup machine](#step-1-find-a-place-for-your-backup-machine)
     * [Step 2: set up the backup machine](#step-2-set-up-the-backup-machine)
-    * [Step 3: enable rsync backups](#step-3-enable-rsync-backups)
+    * [Step 3: set up access to the backup machine](#step-3-set-up-access-to-the-backup-machine)
+    * [Step 4: enable hourly backups](#step-4-enable-hourly-backups)
 
 ## Maintenance guide
 
@@ -399,7 +401,7 @@ If you don't have an SSH key (look for "`~/.ssh/id_rsa`" and
 "`~/.ssh/id_rsa.pub`" files), use this command to generate one:
 
 ```bash
-ssh-keygen -t rsa -b 4096 -N ''
+ssh-keygen -t rsa -b 4096 -N '' -f ~/.ssh/id_rsa
 ```
 
 ### Step 2: add your public key to your machine's authorized keys
@@ -410,7 +412,7 @@ From your computer, run:
 
 <!-- markdownlint-disable MD013 -->
 ```bash
-ssh <yourUserName>@<yourIpAddress> "echo '$(cat ~/.ssh/id_rsa.pub)' | tee -a ~/.ssh/authorized_keys > /dev/null"
+ssh <yourUserName>@<yourIpAddress> "echo '$(cat ~/.ssh/id_rsa.pub)' | tee -a ~/.ssh/authorized_keys > /dev/null && chmod 400 ~/.ssh/id_rsa*"
 ```
 <!-- markdownlint-enable -->
 
@@ -480,7 +482,21 @@ https://<yourIP>/admin
 
 Accept the security warning and login with your credentials.
 
+### Step 3: disable default backups
+
+[Back to top ↑](#installation-guide)
+
+By default, Mailinabox makes backups on the machine itself, which will take a
+lot a space on your disk. Let's disable this feature
+(we will configure external backups later).
+
+Go under "System > Backup status" and set the "Backup to" option to "Nowhere".
+
+![turn-off-backups](https://user-images.githubusercontent.com/6952638/87226501-6973e300-c394-11ea-9eac-980118132294.png)
+
 ## 10. Configure your DNS zone
+
+[Back to top ↑](#installation-guide)
 
 If you go now in the "Status Checks" tab, you will see red issues everywhere.
 
@@ -578,19 +594,36 @@ This is the only way to provide a bullet proof redundancy system for your data.
 You can set up a backup machine with a second Raspberry Pie.
 Find instructions here: [https://github.com/RomainFallet/home-backupserver](https://github.com/RomainFallet/home-backupserver).
 
-### Step 3: enable rsync backups
+### Step 3: set up access to the backup machine
 
 [Back to top ↑](#installation-guide)
 
-In the admin panel, go to "System" > "Backup status" and select "rsync" in the dropdown:
+A specific user must be created on the backup machine
+to isolate the backups of this machine and to enable passwordless connection.
 
-![Capture du 2020-06-15 17-35-02](https://user-images.githubusercontent.com/6952638/84677120-91eff500-af2e-11ea-9a0f-a5c9ed03a97d.png)
+[Follow these instructions to create a new backup access](https://github.com/RomainFallet/home-backupserver#11-create-a-new-backup-access).
 
-Here, enter the backup machine hostname and the [username you've created](https://github.com/RomainFallet/home-backupserver#11-create-a-new-backup-access)
-on the backup machine.
+### Step 4: enable hourly backups
 
-As explained, you need to copy the displayed SSH public
-key to the `~/.ssh/authorized_keys` file of the user on the backup machine.
+[Back to top ↑](#installation-guide)
+
+Create the file `/etc/cron.hourly/backup.sh` (replace "backupUser" and "backupHost"
+in the rsync command with your backup machine informations):
+
+<!-- markdownlint-disable MD013 -->
+```bash
+#!/bin/bash
+
+# Backup
+rsync -e "ssh -p 3022" --delete -aRv --log-file=/var/log/backup.log /home/user-data /root <backupUser>@<backupHost>:~/
+```
+<!-- markdownlint-enable MD013 -->
+
+Make it executable:
+
+```bash
+sudo chmod -x /etc/cron.hourly/backup.sh
+```
 
 ## Maintenance: backup your data manually
 
@@ -619,7 +652,14 @@ sudo ufw enable
 You can trigger a manual backup with this:
 
 ```bash
-sudo ~/mailinabox/management/backup.py
+# Login as root
+sudo su
+
+# Perform backup
+bash /etc/cron.hourly/backup.sh
+
+# Logout from root
+exit
 ```
 
 ### Step 3: re-enable access to the machine
