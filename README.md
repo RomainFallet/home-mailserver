@@ -28,6 +28,8 @@
     * [Step 1: create an SSH key](#step-1-create-an-ssh-key)
     * [Step 2: add your public key to your machine's authorized keys](#step-2-add-your-public-key-to-your-machines-authorized-keys)
     * [Step 3: disallow SSH password authentication](#step-3-disallow-ssh-password-authentication)
+    * [Step 4: keep alive SSH connections](#step-4-keep-alive-ssh-connections)
+    * [Step 5: Change default SSH port](#step-5-change-default-ssh-port)
 9. [Set up Mailinabox](#9-set-up-mailinabox)
     * [Step 1: install Mailinabox](#step-1-install-mailinabox)
     * [Step 2: login to your admin panel](#step-2-login-to-your-admin-panel)
@@ -448,6 +450,35 @@ sudo sed -i'.backup' -e 's/PasswordAuthentication yes/PasswordAuthentication no/
 sudo service ssh restart
 ```
 <!-- markdownlint-enable -->
+
+### Step 4: keep alive SSH connections
+
+[Back to top ↑](#installation-guide)
+
+This will prevent SSH connections to disconnect prematurely.
+
+```bash
+# Keep alive client connections
+echo "
+ClientAliveInterval 120
+ClientAliveCountMax 3" | sudo tee -a /etc/ssh/sshd_config > /dev/null
+
+# Restart SSH
+sudo service ssh restart
+```
+
+### Step 5: Change default SSH port
+
+[Back to top ↑](#installation-guide)
+
+If the default SSH port is available, this will make an eventual attackers task harder.
+
+```bash
+sudo sed -i'.backup' -e 's/#Port 22/Port 3022/g' /etc/ssh/sshd_config
+
+# Restart SSH
+sudo service ssh restart
+```
 
 ## 9. Set up Mailinabox
 
