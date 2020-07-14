@@ -633,7 +633,7 @@ in the rsync command with your backup machine informations):
 #!/bin/bash
 
 # Backup
-rsync -e "ssh -p 3022" --delete -aRv --log-file=/var/log/backup.log /home/user-data /root <backupUser>@<backupHost>:~/
+rsync -e "ssh -p 3022" --delete -aRv --log-file=/var/log/backup.log /home/user-data <backupUser>@<backupHost>:~/
 ```
 <!-- markdownlint-enable MD013 -->
 
