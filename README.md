@@ -313,13 +313,13 @@ We need to instruct it to redirect the traffic to the Pie so that we can
 access it from outside the local network, from the Internet.
 
 According to your ISP/router documentation, redirect the traffic from
-ports 80, 443, 22, 25, 587, 993, 4190 and 53 to your static local IP address.
+ports 80, 443, 22, 25, 587, 993, 4190, 53 and 3022 to your static local IP address.
 
 *Note: for the "Free" ISP, once logged in, go under
 "Ma Freebox" > "Paramétrer mon routeur Freebox" > "Redirections / Baux DHCP"
 and fill the form like bellow.*
 
-![port-forwarding](https://user-images.githubusercontent.com/6952638/76295516-0c1c3800-62b5-11ea-98ef-f40c1b95e18f.png)
+![port-forwarding](https://user-images.githubusercontent.com/6952638/87436371-3f692d80-c5ed-11ea-8887-8163b4360b4b.png)
 
 ### Step 2: disable SMTP blocking
 
