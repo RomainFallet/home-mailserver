@@ -225,39 +225,26 @@ futures security fixes are installed as soon are they are released:
 sudo cp /etc/apt/apt.conf.d/10periodic /etc/apt/apt.conf.d/.10periodic.backup
 sudo cp /etc/apt/apt.conf.d/50unattended-upgrades /etc/apt/apt.conf.d/.50unattended-upgrades.backup
 
-# Download updates when available
-sudo sed -i'.tmp' -e 's,APT::Periodic::Download-Upgradeable-Packages "0";,APT::Periodic::Download-Upgradeable-Packages "1";,g' /etc/apt/apt.conf.d/10periodic
+# Download upgradable packages automatically
+echo "APT::Periodic::Update-Package-Lists \"1\";
+APT::Periodic::Download-Upgradeable-Packages \"1\";
+APT::Periodic::AutocleanInterval \"7\";" | sudo tee /etc/apt/apt.conf.d/10periodic > /dev/null
 
-# Clean apt cache every week
-sudo sed -i'.tmp' -e 's,APT::Periodic::AutocleanInterval "0";,APT::Periodic::AutocleanInterval "7";,g' /etc/apt/apt.conf.d/10periodic
-
-# Enable automatic updates once downloaded
-sudo sed -i'.tmp' -e 's,//\s"${distro_id}:${distro_codename}-updates";,        "${distro_id}:${distro_codename}-updates";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Ask for email
-read -r -p 'Enter your email for notifications on update errors: ' email
-
-# Enable email notifications
-sudo sed -i'.tmp' -e "s,//Unattended-Upgrade::Mail \"root\";,Unattended-Upgrade::Mail \"${email}\";,g" /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Enable email notifications only on failures
-sudo sed -i'.tmp' -e 's,//Unattended-Upgrade::MailOnlyOnError "true";,Unattended-Upgrade::MailOnlyOnError "true";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Remove unused kernel packages when needed
-sudo sed -i'.tmp' -e 's,//Unattended-Upgrade::Remove-Unused-Kernel-Packages "false";,Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Remove unused dependencies when needed
-sudo sed -i'.tmp' -e 's,//Unattended-Upgrade::Remove-Unused-Dependencies "false";,Unattended-Upgrade::Remove-Unused-Dependencies "true";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Reboot when needed
-sudo sed -i'.tmp' -e 's,//Unattended-Upgrade::Automatic-Reboot "false";,Unattended-Upgrade::Automatic-Reboot "true";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Set reboot time to 5 AM
-sudo sed -i'.tmp' -e 's,//Unattended-Upgrade::Automatic-Reboot-Time "02:00";,Unattended-Upgrade::Automatic-Reboot-Time "05:00";,g' /etc/apt/apt.conf.d/50unattended-upgrades
-
-# Remove temporary files
-sudo rm /etc/apt/apt.conf.d/10periodic.tmp
-sudo rm /etc/apt/apt.conf.d/50unattended-upgrades.tmp
+# Install updates automatically
+echo "Unattended-Upgrade::Allowed-Origins {
+  \"\${distro_id}:\${distro_codename}\";
+  \"\${distro_id}:\${distro_codename}-security\";
+  \"\${distro_id}ESMApps:\${distro_codename}-apps-security\";
+  \"\${distro_id}ESM:\${distro_codename}-infra-security\";
+  \"\${distro_id}:\${distro_codename}-updates\";
+};
+Unattended-Upgrade::DevRelease \"false\";
+Unattended-Upgrade::Mail \"${email}\";
+Unattended-Upgrade::MailOnlyOnError \"true\";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";
+Unattended-Upgrade::Remove-Unused-Dependencies \"true\";
+Unattended-Upgrade::Automatic-Reboot \"true\";
+Unattended-Upgrade::Automatic-Reboot-Time \"05:00\";" | sudo tee /etc/apt/apt.conf.d/50unattended-upgrades > /dev/null
 ```
 <!-- markdownlint-enable MD013 -->
 
