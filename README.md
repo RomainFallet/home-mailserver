@@ -230,6 +230,11 @@ echo "APT::Periodic::Update-Package-Lists \"1\";
 APT::Periodic::Download-Upgradeable-Packages \"1\";
 APT::Periodic::AutocleanInterval \"7\";" | sudo tee /etc/apt/apt.conf.d/10periodic > /dev/null
 
+# Ask for email
+if [[ -z "${email}" ]]; then
+    read -r -p "Enter your email (needed to set up email monitoring): " email
+fi
+
 # Install updates automatically
 echo "Unattended-Upgrade::Allowed-Origins {
   \"\${distro_id}:\${distro_codename}\";
