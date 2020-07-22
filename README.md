@@ -406,7 +406,7 @@ From your computer, run:
 
 <!-- markdownlint-disable MD013 -->
 ```bash
-ssh <yourUserName>@<yourIpAddress> "echo '$(cat ~/.ssh/id_rsa.pub)' | tee -a ~/.ssh/authorized_keys > /dev/null && chmod 400 ~/.ssh/id_rsa*"
+ssh <yourUserName>@<yourIpAddress> "echo '$(cat ~/.ssh/id_rsa.pub)' | tee -a ~/.ssh/authorized_keys > /dev/null"
 ```
 <!-- markdownlint-enable -->
 
