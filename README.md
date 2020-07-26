@@ -626,27 +626,73 @@ to isolate the backups of this machine and to enable passwordless connection.
 
 [Follow these instructions to create a new backup access](https://github.com/RomainFallet/home-backupserver#11-create-a-new-backup-access).
 
-### Step 4: enable hourly backups
+### Step 4: limit the CPU usage of the backups
 
 [Back to top ↑](#installation-guide)
 
-Create the file `/etc/cron.hourly/backup.sh` (replace "backupUser" and "backupHost"
-in the rsync command with your backup machine informations):
+<!-- markdownlint-disable MD013 -->
+```bash
+# Install cpulimit
+sudo apt install -y cpulimit
+
+# Create the service file to launch cpulimit on startup
+echo "[Unit]
+Description=CPU limit for rsync backups
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/cpulimit -e rsync -l 50
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/cpulimitrsync.service > /dev/null
+
+# Enable the service file
+sudo systemctl daemon-reload
+sudo systemctl enable cpulimitrsync
+
+# Start the service
+sudo service cpulimitrsync start
+```
+<!-- markdownlint-enable -->
+
+### Step 5: enable hourly backups
+
+[Back to top ↑](#installation-guide)
 
 <!-- markdownlint-disable MD013 -->
 ```bash
-#!/bin/bash
+# Get credentials
+read -r -p "Enter your backup username: " backupusername
+read -r -p "Enter your backup hostname: " backuphostname
 
-# Backup
-rsync -e "ssh -p 3022" --delete -aRv --log-file=/var/log/backup.log /home/user-data <backupUser>@<backupHost>:~/
-```
-<!-- markdownlint-enable MD013 -->
+# Enable hourly backups
+echo "#!/bin/bash
+pgrep rsync || rsync -e 'ssh -p 3022' --delete -aRv --log-file=/var/log/backup.log /home/user-data ${backupusername}@${backuphostname}:~/" | sudo tee /etc/cron.hourly/backup.sh > /dev/null
 
-Make it executable:
-
-```bash
+# Make it executable:
 sudo chmod -x /etc/cron.hourly/backup.sh
 ```
+<!-- markdownlint-enable -->
+
+### Step 6: set up cron monitoring by email
+
+<!-- markdownlint-disable MD013 -->
+```bash
+# Ask for email
+if [[ -z "${email}" ]]; then
+  read -r -p "Enter your email (needed to set up email monitoring): " email
+fi
+
+# Set up email monitoring
+mailmonitoringconfig="MAILTO=${email}"
+if ! sudo grep "^${mailmonitoringconfig}" /etc/crontab > /dev/null
+then
+  sudo sed -i'.backup' -E "s/^PATH=(.+?)/PATH=\1\n${mailmonitoringconfig}/" /etc/crontab >  /dev/null
+fi
+```
+<!-- markdownlint-enable -->
 
 ## Maintenance: backup your data manually
 
