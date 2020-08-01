@@ -664,15 +664,18 @@ sudo service cpulimitrsync start
 <!-- markdownlint-disable MD013 -->
 ```bash
 # Get credentials
-read -r -p "Enter your backup username: " backupusername
-read -r -p "Enter your backup hostname: " backuphostname
+read -r -p "Enter your backup machine SSH username: " backupusername
+read -r -p "Enter your backup machine SSH hostname: " backuphostname
+read -r -p "Enter your backup machine SSH port: " backupport
+
+# Backup command
+backupcroncommand="0 *    * * *    root    pgrep rsync || rsync -e 'ssh -p ${backupport}' --delete -av /home/user-data ${backupusername}@${backuphostname}:~/"
 
 # Enable hourly backups
-echo "#!/bin/bash
-pgrep rsync || rsync -e 'ssh -p 3022' --delete -aRv --log-file=/var/log/backup.log /home/user-data ${backupusername}@${backuphostname}:~/" | sudo tee /etc/cron.hourly/backup.sh > /dev/null
-
-# Make it executable:
-sudo chmod -x /etc/cron.hourly/backup.sh
+if ! sudo grep "^${backupcroncommand}" /etc/crontab > /dev/null
+then
+  echo "${backupcroncommand}" | sudo tee -a /etc/crontab > /dev/null
+fi
 ```
 <!-- markdownlint-enable -->
 
@@ -720,16 +723,23 @@ sudo ufw enable
 
 You can trigger a manual backup with this:
 
+<!-- markdownlint-disable MD013 -->
 ```bash
 # Login as root
 sudo su
 
+# Get credentials
+read -r -p "Enter your backup machine SSH username: " backupusername
+read -r -p "Enter your backup machine SSH hostname: " backuphostname
+read -r -p "Enter your backup machine SSH port: " backupport
+
 # Perform backup
-bash /etc/cron.hourly/backup.sh
+rsync -e "ssh -p ${backupport}" --delete -av /home/user-data ${backupusername}@${backuphostname}:~/
 
 # Logout from root
 exit
 ```
+<!-- markdownlint-enable -->
 
 ### Step 3: re-enable access to the machine
 
