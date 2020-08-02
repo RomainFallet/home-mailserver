@@ -669,7 +669,7 @@ read -r -p "Enter your backup machine SSH hostname: " backuphostname
 read -r -p "Enter your backup machine SSH port: " backupport
 
 # Backup command
-backupcroncommand="0 *    * * *    root    pgrep rsync || rsync -e 'ssh -p ${backupport}' --delete -av /home/user-data ${backupusername}@${backuphostname}:~/"
+backupcroncommand="0 *    * * *    root    pgrep rsync > /dev/null || rsync -e 'ssh -p ${backupport}' --delete -av /home/user-data ${backupusername}@${backuphostname}:~/ > /dev/null"
 
 # Enable hourly backups
 if ! sudo grep "^${backupcroncommand}" /etc/crontab > /dev/null
